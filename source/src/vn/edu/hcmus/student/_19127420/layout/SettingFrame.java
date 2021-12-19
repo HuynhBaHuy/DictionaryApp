@@ -14,6 +14,7 @@ public class SettingFrame extends JFrame {
     private JButton deleteSlangButton;
     private JButton resetChangesButton;
     private JList slangList;
+    private JButton backToMainMenuButton;
 
     public SettingFrame(){
         setDefaultCloseOperation(javax.swing.

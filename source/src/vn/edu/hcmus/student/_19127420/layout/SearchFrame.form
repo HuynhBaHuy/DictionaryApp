@@ -2,7 +2,7 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="vn.edu.hcmus.student._19127420.layout.SearchFrame">
   <grid id="27dc6" binding="SearchPane" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="529" height="400"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -40,6 +40,12 @@
                 <constraints/>
                 <properties>
                   <text value="History search"/>
+                </properties>
+              </component>
+              <component id="d2427" class="javax.swing.JButton" binding="backToMenuButton" default-binding="true">
+                <constraints/>
+                <properties>
+                  <text value="Back to menu"/>
                 </properties>
               </component>
             </children>

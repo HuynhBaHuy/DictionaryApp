@@ -19,12 +19,13 @@ public class SearchFrame extends JFrame {
     private JList resultList;
     private JLabel nameSearch;
     private JButton historySearchButton;
+    private JButton backToMenuButton;
 
     public SearchFrame(){
         setDefaultCloseOperation(javax.swing.
                 WindowConstants.DISPOSE_ON_CLOSE);
         setContentPane(SearchPane);
         pack();
-        setVisible(true);
+
     }
 }
