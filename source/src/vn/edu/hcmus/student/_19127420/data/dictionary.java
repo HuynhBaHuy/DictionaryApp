@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class dictionary {
-    private final List<slang> slangArray;
+    private final List<slangWord> slangArray;
 
     /**
      * Constructor
@@ -31,7 +31,7 @@ public class dictionary {
     public boolean addSlang(String symbol, String[] meanings){
         int index = searchBySlang(symbol);
         if(index<0) {
-            slangArray.add(new slang(symbol, meanings));
+            slangArray.add(new slangWord(symbol, meanings));
             Collections.sort(slangArray);
             return true;
         }
@@ -51,7 +51,7 @@ public class dictionary {
         if(index<0){
             return false;
         }
-        slangArray.set(index, new slang(symbol,meanings));
+        slangArray.set(index, new slangWord(symbol,meanings));
         return true;
     }
 
@@ -70,7 +70,7 @@ public class dictionary {
      * get slang randomly
      * @return slang
      */
-    public slang randomSlang() {
+    public slangWord randomSlang() {
         Random rand = new Random();
         int index = rand.nextInt(slangArray.size());
         return slangArray.get(index);
@@ -85,7 +85,7 @@ public class dictionary {
         if(index<0 || index>=slangArray.size()){
             return null;
         }
-        return slangArray.get(index).getSymbol();
+        return slangArray.get(index).getSlang();
     }
 
     /**
@@ -105,7 +105,7 @@ public class dictionary {
      * @return index of this slang or null if
      */
     public int searchBySlang(String slang){
-        slang temp = new slang(slang,new String[0]);
+        slangWord temp = new slangWord(slang,new String[0]);
         int index = Collections.binarySearch(slangArray, temp);
 
         return index;
@@ -135,8 +135,8 @@ public class dictionary {
                 }
                 String[] slang = str.split("`");
                 String symbol = slang[0];
-                slang s = new slang();
-                s.setSymbol(symbol);
+                slangWord s = new slangWord();
+                s.setSlang(symbol);
                 if(slang.length<2){
                     System.out.println(slang[0]);
                 }
@@ -157,7 +157,7 @@ public class dictionary {
      */
     public static void main(String[] args){
         dictionary data = new dictionary();
-        slang random = data.randomSlang();
+        slangWord random = data.randomSlang();
         String[] definition = data.getDefinitions(data.searchBySlang("23"));
         random.display();
     }

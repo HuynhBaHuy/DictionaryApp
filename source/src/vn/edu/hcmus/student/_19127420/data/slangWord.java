@@ -6,11 +6,11 @@ package vn.edu.hcmus.student._19127420.data;
  * Description: define slang word class which contains symbol and meaning
  */
 
-public class slang implements Comparable<slang> {
-    private String symbol;
+public class slangWord implements Comparable<slangWord> {
+    private String slang;
     private String[] meaning;
-    public slang(){
-        symbol = "";
+    public slangWord(){
+        slang = "";
         meaning = new String[0];
     }
 
@@ -20,21 +20,21 @@ public class slang implements Comparable<slang> {
      * @return positive number if this > s, 0 if equal, otherwise negative number
      */
     @Override
-    public int compareTo(slang s){
-        return symbol.compareTo(s.symbol);
+    public int compareTo(slangWord s){
+        return slang.compareTo(s.slang);
     }
-    public slang(String symbol, String[] meaning) {
-        this.symbol = symbol;
+    public slangWord(String slang, String[] meaning) {
+        this.slang = slang;
         this.meaning = meaning;
     }
     public String[] getMeaning() {
         return meaning;
     }
-    public String getSymbol() {
-        return symbol;
+    public String getSlang() {
+        return slang;
     }
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
+    public void setSlang(String slang) {
+        this.slang = slang;
     }
     public void setMeaning(String[] meaning) {
         this.meaning = meaning;
@@ -65,8 +65,11 @@ public class slang implements Comparable<slang> {
             if(i==0 || i== meaning.length-1){
                 m+=meaning[i];
             }
-            m+= "| "+meaning[i];
+            else{
+                m+= "| "+meaning[i];
+            }
+
         }
-        System.out.println(symbol + ": " + m);
+        System.out.println(slang + ": " + m);
     }
 }
