@@ -5,13 +5,16 @@ package vn.edu.hcmus.student._19127420.layout;/*..
  * Description:...
  */
 
+import vn.edu.hcmus.student._19127420.data.dictionary;
+import vn.edu.hcmus.student._19127420.data.slangWord;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainFrame extends JFrame {
-    final int height_frame = 200;
-    final int width_frame = 500;
+    final int height_frame = 500;
+    final int width_frame = 700;
 
     private JPanel mainPanel;
     private JPanel headerPanel;
@@ -21,8 +24,14 @@ public class MainFrame extends JFrame {
     private JButton settingButton;
     private JButton quizzButton;
     private JButton randomButton;
+    private JPanel randomPane;
+    private JLabel sRandomLabel;
+    private JLabel mRandomLabel;
+    private JButton backButton;
 
+    dictionary data;
     public MainFrame(){
+        data = new dictionary();
         createAndShowGUI();
         searchButton.addActionListener(new ActionListener() {
             @Override
@@ -49,7 +58,12 @@ public class MainFrame extends JFrame {
         randomButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                boolean flag = randomPane.isVisible();
+                randomPane.setVisible(!flag);
+                if(randomPane.isVisible()){
+                    slangWord rSlang = data.randomSlang();
+                    sRandomLabel.setText(rSlang.getSlang());
+                }
             }
         });
     }

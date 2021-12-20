@@ -1,14 +1,12 @@
 package vn.edu.hcmus.student._19127420;
 
-import vn.edu.hcmus.student._19127420.data.dictionary;
 import vn.edu.hcmus.student._19127420.layout.MainFrame;
+import vn.edu.hcmus.student._19127420.layout.layout;
 
 public class App {
-    MainFrame frame;
-    dictionary data;
+    layout layout;
     public App() {
-        frame = new MainFrame();
-        data = new dictionary();
+        layout = new layout();
     }
     public static void main(String[] args) {
 	    // write your code here
