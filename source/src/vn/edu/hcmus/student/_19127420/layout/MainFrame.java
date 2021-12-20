@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 
 public class MainFrame extends JFrame {
     final int height_frame = 200;
-    final int width_frame = 300;
+    final int width_frame = 500;
 
     private JPanel mainPanel;
     private JPanel headerPanel;
@@ -20,13 +20,13 @@ public class MainFrame extends JFrame {
     private JButton searchButton;
     private JButton settingButton;
     private JButton quizzButton;
+    private JButton randomButton;
 
     public MainFrame(){
         createAndShowGUI();
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setVisible(false);
                 SearchFrame searchFrame = new SearchFrame();
                 searchFrame.setSize(width_frame,height_frame);
                 searchFrame.setVisible(true);
@@ -35,7 +35,6 @@ public class MainFrame extends JFrame {
         settingButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setVisible(false);
                 SettingFrame settingFrame = new SettingFrame();
                 settingFrame.setSize(width_frame,height_frame);
                 settingFrame.setVisible(true);
@@ -47,10 +46,14 @@ public class MainFrame extends JFrame {
 
             }
         });
+        randomButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
-    public static void main(String []args){
-        MainFrame app = new MainFrame();
-    }
+
 
     private void createAndShowGUI(){
         JFrame.setDefaultLookAndFeelDecorated(true);
