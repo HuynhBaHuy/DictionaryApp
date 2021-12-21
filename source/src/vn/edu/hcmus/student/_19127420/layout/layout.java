@@ -75,9 +75,14 @@ public class layout extends JFrame  implements ActionListener {
             backBtn.addActionListener(this);
             backBtn.setActionCommand("back-to-search-btn");
             // init other component in search card
+            JLabel inputLabel = new JLabel("Seach");
             inputTextField = new JTextField();
             resultSeachList = new JList<String>();
-
+            JPanel inputPanel = new JPanel();
+            inputPanel.setLayout(new BoxLayout(inputPanel,BoxLayout.X_AXIS));
+            inputPanel.add(inputLabel);
+            inputPanel.add(Box.createRigidArea(new Dimension(20,0)));
+            inputPanel.add(inputTextField);
             // init component in history card
             String[] columnNames = {"Time start", "Key search","Results"};
             int length = log.getLength();
@@ -105,7 +110,7 @@ public class layout extends JFrame  implements ActionListener {
             headerPanel.add(historyBtn);
 
             // add component to search card
-            searchingPanel.add(inputTextField,BorderLayout.PAGE_START);
+            searchingPanel.add(inputPanel,BorderLayout.PAGE_START);
             searchingPanel.add(resultSeachList,BorderLayout.CENTER);
 
             // add component to history card
