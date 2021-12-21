@@ -24,10 +24,26 @@ public class history {
         logSearch timestamp = new logSearch(input,result);
         log.add(timestamp);
     }
-    public void add(String input, String[] result){
-        log.add(new logSearch(input,result));
+    public String[] add(String input, String[] result){
+        logSearch logS = new logSearch(input,result);
+        log.add(logS);
+        String[] row = new String[3];
+        row[0] = logS.getTime();
+        row[1] = logS.getInput();
+        String str = "";
+        for(int j=0;j<result.length;j++){
+            if(j ==0 || j== result.length - 1){
+                str += " "+result[j];
+            }
+            else{
+                str += ", "+result[j];
+            }
+        }
+        row[2] = str;
+        return row;
     }
     public List<logSearch> getLog(){return log;}
+    public int getLength(){return log.size();}
     /**
      * Only for testing
      * @param args

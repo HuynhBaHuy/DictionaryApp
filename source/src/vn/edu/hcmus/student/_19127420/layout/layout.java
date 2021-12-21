@@ -10,10 +10,10 @@ import vn.edu.hcmus.student._19127420.data.dictionary;
 import vn.edu.hcmus.student._19127420.data.slangWord;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 /**
  * define main frame
@@ -27,23 +27,24 @@ public class layout extends JFrame  implements ActionListener {
     JButton backSearchButton;
     JButton backRandomButton;
     dictionary data;
-
+    history log;
     class searchPanel extends JPanel implements  ActionListener{
         final String notFound = "404 NOT FOUND";
 
         JPanel headerPanel;
-        JPanel bodyPanel;
+        JPanel bodySearchPanel;
         JPanel searchingPanel;
         JPanel historyPanel;
 
         JButton searchBySlangBtn;
         JButton searchByDefinitionBtn;
         JButton historyBtn;
+        JButton backBtn;
         JTextField inputTextField;
         JList<String> resultSeachList;
-        JTable historySeachTable;
+        JTable historySearchTable;
 
-        history log;
+
         /**
          * constructor for search panel
          */
@@ -51,30 +52,52 @@ public class layout extends JFrame  implements ActionListener {
             setLayout(new BorderLayout());
             // init panel
             headerPanel = new JPanel(new FlowLayout());
-            bodyPanel = new JPanel(new CardLayout());
+            bodySearchPanel = new JPanel(new CardLayout());
             searchingPanel = new JPanel(new BorderLayout());
             historyPanel = new JPanel(new BorderLayout());
 
-            // prepare data
-            log = new history();
+
 
             //init button
             searchBySlangBtn = new JButton("Seach by slang");
             searchBySlangBtn.addActionListener(this);
             searchBySlangBtn.setActionCommand("search-by-slang-btn");
+
             searchByDefinitionBtn = new JButton("Search by definition");
             searchByDefinitionBtn.addActionListener(this);
             searchByDefinitionBtn.setActionCommand("search-by-definition-btn");
+
             historyBtn = new JButton("History");
             historyBtn.addActionListener(this);
             historyBtn.setActionCommand("history-btn");
 
+            backBtn = new JButton("Back to search");
+            backBtn.addActionListener(this);
+            backBtn.setActionCommand("back-to-search-btn");
             // init other component in search card
             inputTextField = new JTextField();
             resultSeachList = new JList<String>();
 
             // init component in history card
-            historySeachTable = new JTable();
+            String[] columnNames = {"Time start", "Key search","Results"};
+            int length = log.getLength();
+            String[][] logData = new String[length][3];
+            for (int i = 0; i < length; i++){
+                logData[i][0] = log.getLog().get(i).getTime();
+                logData[i][1] = log.getLog().get(i).getInput();
+                String[] resultArray = log.getLog().get(i).getResult();
+                String result = "";
+                for(int j=0;j<resultArray.length;j++){
+                    if(j ==0 || j== resultArray.length - 1){
+                        result += " "+resultArray[j];
+                    }
+                    else{
+                        result += ", "+resultArray[j];
+                    }
+                }
+                logData[i][2] = result;
+            }
+            historySearchTable = new JTable(new DefaultTableModel(logData,columnNames));
 
             // add button to header pane
             headerPanel.add(searchBySlangBtn);
@@ -87,15 +110,15 @@ public class layout extends JFrame  implements ActionListener {
 
             // add component to history card
             historyPanel.add(new JLabel("History search"), BorderLayout.PAGE_START);
-            historyPanel.add(historySeachTable, BorderLayout.CENTER);
-
+            historyPanel.add(historySearchTable, BorderLayout.CENTER);
+            historyPanel.add(backBtn,BorderLayout.LINE_END);
             // add card to body panel
-            bodyPanel.add(searchingPanel,"search-pane");
-            bodyPanel.add(historySeachTable,"history-pane");
+            bodySearchPanel.add(searchingPanel,"search-pane");
+            bodySearchPanel.add(historyPanel,"history-pane");
 
             // add to main panel
             add(headerPanel, BorderLayout.PAGE_START);
-            add(bodyPanel,BorderLayout.CENTER);
+            add(bodySearchPanel,BorderLayout.CENTER);
             add(backSearchButton,BorderLayout.PAGE_END);
         }
 
@@ -108,6 +131,7 @@ public class layout extends JFrame  implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             String str = e.getActionCommand();
+            CardLayout cl = (CardLayout)(bodySearchPanel.getLayout());
             if(str.equals("search-by-slang-btn")){
                 String key = inputTextField.getText();
                 int index = data.searchBySlang(key);
@@ -117,7 +141,9 @@ public class layout extends JFrame  implements ActionListener {
                     results[0] = notFound;
                 }
                 resultSeachList.setListData(results);
-                log.add(key,results);
+                String[] row  = log.add(key,results);
+                DefaultTableModel model = (DefaultTableModel) historySearchTable.getModel();
+                model.insertRow(0,row);
             }
             else if(str.equals("search-by-definition-btn")){
                 String key = inputTextField.getText();
@@ -132,10 +158,19 @@ public class layout extends JFrame  implements ActionListener {
                 }
 
                 resultSeachList.setListData(results.getItems());
-                log.add(key,results.getItems());
+                String[] row  = log.add(key,results.getItems());
+                DefaultTableModel model = (DefaultTableModel) historySearchTable.getModel();
+                model.insertRow(0,row);
             }
             else if(str.equals("history-btn")){
-
+                searchBySlangBtn.setEnabled(false);
+                searchByDefinitionBtn.setEnabled(false);
+                cl.show(bodySearchPanel,"history-pane");
+            }
+            else if(str.equals("back-to-search-btn")){
+                searchBySlangBtn.setEnabled(true);
+                searchByDefinitionBtn.setEnabled(true);
+                cl.show(bodySearchPanel,"search-pane");
             }
 
         }
@@ -231,6 +266,9 @@ public class layout extends JFrame  implements ActionListener {
     public layout(){
         // initialize the dictionary
         data = new dictionary();
+        // initialize search log
+        log = new history();
+
 
         //initialize the component
         initializeComponent();
