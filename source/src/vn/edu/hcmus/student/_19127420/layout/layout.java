@@ -5,6 +5,7 @@ package vn.edu.hcmus.student._19127420.layout;/*..
  * Description:...
  */
 
+import vn.edu.hcmus.student._19127420.app.history;
 import vn.edu.hcmus.student._19127420.data.dictionary;
 import vn.edu.hcmus.student._19127420.data.slangWord;
 
@@ -12,16 +13,138 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
+/**
+ * define main frame
+ */
 public class layout extends JFrame  implements ActionListener {
     JPanel bodyPanel;
     JButton searchButton;
     JButton settingButton;
     JButton quizzButton;
     JButton randomButton;
-    JButton backButton;
+    JButton backSearchButton;
+    JButton backRandomButton;
     dictionary data;
 
+    class searchPanel extends JPanel implements  ActionListener{
+        final String notFound = "404 NOT FOUND";
+
+        JPanel headerPanel;
+        JPanel bodyPanel;
+        JPanel searchingPanel;
+        JPanel historyPanel;
+
+        JButton searchBySlangBtn;
+        JButton searchByDefinitionBtn;
+        JButton historyBtn;
+        JTextField inputTextField;
+        JList<String> resultSeachList;
+        JTable historySeachTable;
+
+        history log;
+        /**
+         * constructor for search panel
+         */
+        public searchPanel(){
+            setLayout(new BorderLayout());
+            // init panel
+            headerPanel = new JPanel(new FlowLayout());
+            bodyPanel = new JPanel(new CardLayout());
+            searchingPanel = new JPanel(new BorderLayout());
+            historyPanel = new JPanel(new BorderLayout());
+
+            // prepare data
+            log = new history();
+
+            //init button
+            searchBySlangBtn = new JButton("Seach by slang");
+            searchBySlangBtn.addActionListener(this);
+            searchBySlangBtn.setActionCommand("search-by-slang-btn");
+            searchByDefinitionBtn = new JButton("Search by definition");
+            searchByDefinitionBtn.addActionListener(this);
+            searchByDefinitionBtn.setActionCommand("search-by-definition-btn");
+            historyBtn = new JButton("History");
+            historyBtn.addActionListener(this);
+            historyBtn.setActionCommand("history-btn");
+
+            // init other component in search card
+            inputTextField = new JTextField();
+            resultSeachList = new JList<String>();
+
+            // init component in history card
+            historySeachTable = new JTable();
+
+            // add button to header pane
+            headerPanel.add(searchBySlangBtn);
+            headerPanel.add(searchByDefinitionBtn);
+            headerPanel.add(historyBtn);
+
+            // add component to search card
+            searchingPanel.add(inputTextField,BorderLayout.PAGE_START);
+            searchingPanel.add(resultSeachList,BorderLayout.CENTER);
+
+            // add component to history card
+            historyPanel.add(new JLabel("History search"), BorderLayout.PAGE_START);
+            historyPanel.add(historySeachTable, BorderLayout.CENTER);
+
+            // add card to body panel
+            bodyPanel.add(searchingPanel,"search-pane");
+            bodyPanel.add(historySeachTable,"history-pane");
+
+            // add to main panel
+            add(headerPanel, BorderLayout.PAGE_START);
+            add(bodyPanel,BorderLayout.CENTER);
+            add(backSearchButton,BorderLayout.PAGE_END);
+        }
+
+
+        /**
+         * Invoked when an action occurs.
+         *
+         * @param e the event to be processed
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String str = e.getActionCommand();
+            if(str.equals("search-by-slang-btn")){
+                String key = inputTextField.getText();
+                int index = data.searchBySlang(key);
+                String[]results = data.getDefinitions(index);
+                if(results == null){
+                    results = new String[1];
+                    results[0] = notFound;
+                }
+                resultSeachList.setListData(results);
+                log.add(key,results);
+            }
+            else if(str.equals("search-by-definition-btn")){
+                String key = inputTextField.getText();
+                int[] indexes = data.searchByDefinition(key);
+                if(indexes == null){
+
+                }
+                List results = new List(indexes.length);
+                for(int i = 0; i < indexes.length; i++){
+
+                    results.add(data.getSlang(indexes[i]));
+                }
+
+                resultSeachList.setListData(results.getItems());
+                log.add(key,results.getItems());
+            }
+            else if(str.equals("history-btn")){
+
+            }
+
+        }
+    }
+
+
+    /**
+     * define random panel
+     */
     class randomPanel extends JPanel implements ActionListener {
         JPanel headerPanel;
         JButton randBtn;
@@ -37,7 +160,7 @@ public class layout extends JFrame  implements ActionListener {
             headerPanel = new JPanel(new FlowLayout());
             randBtn = new JButton("Random");
             headerPanel.add(randBtn);
-            headerPanel.add(backButton);
+            headerPanel.add(backRandomButton);
 
             // add action listener for button
             randBtn.addActionListener(this);
@@ -81,6 +204,9 @@ public class layout extends JFrame  implements ActionListener {
         }
     }
 
+    /**
+     * define menu panel
+     */
     class menuPanel extends JPanel {
         JLabel menuLabel;
         JPanel bodyPanel;
@@ -99,6 +225,9 @@ public class layout extends JFrame  implements ActionListener {
 
     }
 
+    /**
+     * constructor for layout
+     */
     public layout(){
         // initialize the dictionary
         data = new dictionary();
@@ -109,29 +238,40 @@ public class layout extends JFrame  implements ActionListener {
         // body panel
         bodyPanel = new JPanel(new CardLayout());
 
-        // initizliza the menu pane
+        // initialize the card pane
         JPanel menuPanel = new menuPanel();
         JPanel randomPanel = new randomPanel();
-
+        JPanel searchPanel = new searchPanel();
         bodyPanel.add(menuPanel,"menu");
         bodyPanel.add(randomPanel,"random");
+        bodyPanel.add(searchPanel,"search");
         // show GUI
         createAndShowGUI(bodyPanel);
     }
 
+    private void createBackToMainMenu(JButton back) {
+        back.setText("Back to main menu");
+        back.addActionListener(this);
+        back.setActionCommand("back");
+    }
     private void initializeComponent(){
         // init
         searchButton = new JButton("Search");
         settingButton = new JButton("Settings");
         quizzButton = new JButton("Quizz");
         randomButton = new JButton("Random");
-        backButton = new JButton("Back");
+        backSearchButton = new JButton();
+        backRandomButton = new JButton();
+
+        // create back button
+        createBackToMainMenu(backSearchButton);
+        createBackToMainMenu(backRandomButton);
 
         // action lister
         randomButton.addActionListener(this);
         randomButton.setActionCommand("random_menu_btn");
-        backButton.addActionListener(this);
-        backButton.setActionCommand("back");
+        searchButton.addActionListener(this);
+        searchButton.setActionCommand("search_menu_btn");
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -141,7 +281,7 @@ public class layout extends JFrame  implements ActionListener {
             cl.show(bodyPanel,"random");
         }
         else if(str == "search_menu_btn"){
-
+            cl.show(bodyPanel,"search");
         }
         else if(str == "setting_menu_btn"){
 
@@ -151,9 +291,10 @@ public class layout extends JFrame  implements ActionListener {
         }
         else if(str == "back")
         {
-            cl.previous(bodyPanel);
+            cl.show(bodyPanel,"menu");
         }
     }
+
     private void createAndShowGUI(Container container){
         JFrame.setDefaultLookAndFeelDecorated(true);
 

@@ -112,12 +112,12 @@ public class dictionary {
     }
 
     /**
-     *
-     * @param definition
-     * @return
+     * search by definition
+     * @param key:STRING
+     * @return array of index
      */
-    public int searchByDefinition(String definition){
-        return -1;
+    public int[] searchByDefinition(String key){
+        return new int[3];
     }
 
     /**
@@ -141,7 +141,7 @@ public class dictionary {
                     System.out.println(slang[0]);
                 }
                 String meanings = slang[1];
-                String[] meaning = meanings.split("\\|");
+                String[] meaning = meanings.split("\\| ");
                 s.setMeaning(meaning);
                 this.slangArray.add(s);
 
