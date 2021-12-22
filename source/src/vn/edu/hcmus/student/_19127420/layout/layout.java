@@ -295,10 +295,11 @@ public class layout extends JFrame  implements ActionListener {
         JTextField addDefinitionTextField;
 
         JPanel editPanel;
-        JComboBox chooseSlangComboBox;
+        JTextField chooseSlangTextField;
+        JButton findBtn;
         JLabel editSlangLabel;
         JLabel editDefinitionLabel;
-        JTextField editDefinitionTextField;
+        JTextArea editDefinitionTextArea;
 
         JPanel removePanel;
         JList listSlang;
@@ -313,51 +314,16 @@ public class layout extends JFrame  implements ActionListener {
             initializeComponent();
 
             // control panel
-            GridBagConstraints constraintsControl = new GridBagConstraints();
-            constraintsControl.fill = GridBagConstraints.HORIZONTAL;
-            constraintsControl.anchor= GridBagConstraints.CENTER;
-            constraintsControl.gridx = 0;
-            constraintsControl.gridy = 0;
-            constraintsControl.insets = new Insets(-1,10 ,-1 ,10 );
-            constraintsControl.weighty = 0.3;
-            controlPanel.add(addBtn,constraintsControl);
-            constraintsControl.gridy = 1;
-            controlPanel.add(editBtn,constraintsControl);
-            constraintsControl.gridy = 2;
-            controlPanel.add(removeBtn,constraintsControl);
-            constraintsControl.gridy = 3;
-            controlPanel.add(resetBtn,constraintsControl);
-            JPanel temp = new JPanel();
-            temp.setBorder(BorderFactory.createLineBorder(Color.red));
-            JPanel temp1 = new JPanel();
-            temp1.setBorder(BorderFactory.createLineBorder(Color.red));
+            createControlPanel();
+
             // add card
-            addPanel.setBorder(BorderFactory.createLineBorder(Color.red));
-            GridBagConstraints constraintsAddCard = new GridBagConstraints();
-            constraintsAddCard.fill = GridBagConstraints.HORIZONTAL;
-            constraintsAddCard.anchor = GridBagConstraints.NORTH;
-            constraintsAddCard.insets = new Insets(0, 5, 5, 0);
-            constraintsAddCard.weightx = 0.5;
-            constraintsAddCard.gridx = 0;
-            constraintsAddCard.gridy = 1;
-            addPanel.add(addSlangLabel,constraintsAddCard);
+            createAddCard();
 
-            constraintsAddCard.gridx = 1;
-            constraintsAddCard.gridy = 1;
-            constraintsAddCard.gridwidth = GridBagConstraints.REMAINDER;
-            addPanel.add(addSlangTextField,constraintsAddCard);
-
-            constraintsAddCard.gridx = 0;
-            constraintsAddCard.gridy = 2;
-            addPanel.add(addDefinitionLabel,constraintsAddCard);
-
-            constraintsAddCard.gridx = 1;
-            constraintsAddCard.gridy = 2;
-            constraintsAddCard.gridwidth = GridBagConstraints.REMAINDER;
-            addPanel.add(addDefinitionTextField,constraintsAddCard);
             // edit card
+            createEditCard();
 
             // remove card
+            createRemoveCard();
 
             // body panel
             bodyPanel.add(addPanel,"add_card");
@@ -376,6 +342,83 @@ public class layout extends JFrame  implements ActionListener {
             add(bodyPanel,BorderLayout.CENTER);
             add(endPanel,BorderLayout.PAGE_END);
         }
+
+        private void createControlPanel() {
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.fill = GridBagConstraints.HORIZONTAL;
+            constraints.anchor= GridBagConstraints.CENTER;
+            constraints.gridx = 0;
+            constraints.gridy = 0;
+            constraints.insets = new Insets(-1,10 ,-1 ,10 );
+            constraints.weighty = 0.3;
+            controlPanel.add(addBtn,constraints);
+            constraints.gridy = 1;
+            controlPanel.add(editBtn,constraints);
+            constraints.gridy = 2;
+            controlPanel.add(removeBtn,constraints);
+            constraints.gridy = 3;
+            controlPanel.add(resetBtn,constraints);
+        }
+
+        private void createRemoveCard() {
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.fill = GridBagConstraints.HORIZONTAL;
+            constraints.anchor= GridBagConstraints.CENTER;
+            constraints.gridx = 0;
+            constraints.gridy = 0;
+            constraints.weightx = 1.0;
+        }
+
+        private void createEditCard() {
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.fill = GridBagConstraints.HORIZONTAL;
+            constraints.insets = new Insets(5,5 ,5 ,5 );
+            constraints.gridx = 0;
+            constraints.gridy = 0;
+            constraints.weightx = 0.5;
+            editPanel.add(editSlangLabel,constraints);
+            constraints.gridx = 1;
+            constraints.gridy = 0;
+            constraints.gridwidth = 10;
+            editPanel.add(chooseSlangTextField,constraints);
+            constraints.gridx = 11;
+            constraints.gridy = 0;
+            editPanel.add(findBtn,constraints);
+
+            constraints.gridx=0;
+            constraints.gridy = 1;
+            constraints.gridwidth=1;
+            editPanel.add(editDefinitionLabel,constraints);
+            constraints.gridx=1;
+            constraints.gridy = 1;
+            constraints.gridwidth =GridBagConstraints.REMAINDER;
+            editPanel.add(editDefinitionTextArea,constraints);
+        }
+
+        private void createAddCard(){
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.fill = GridBagConstraints.HORIZONTAL;
+            constraints.anchor = GridBagConstraints.NORTH;
+            constraints.insets = new Insets(0, 5, 5, 0);
+            constraints.weightx = 0.2;
+            constraints.gridx = 0;
+            constraints.gridy = 1;
+            addPanel.add(addSlangLabel,constraints);
+
+            constraints.gridx = 1;
+            constraints.gridy = 1;
+            constraints.gridwidth = GridBagConstraints.REMAINDER;
+            addPanel.add(addSlangTextField,constraints);
+
+            constraints.gridx = 0;
+            constraints.gridy = 2;
+            addPanel.add(addDefinitionLabel,constraints);
+
+            constraints.gridx = 1;
+            constraints.gridy = 2;
+            constraints.gridwidth = GridBagConstraints.REMAINDER;
+            addPanel.add(addDefinitionTextField,constraints);
+        }
         private void initializeComponent(){
             //initialize Component
             bodyPanel = new JPanel(new CardLayout());
@@ -392,16 +435,17 @@ public class layout extends JFrame  implements ActionListener {
             addPanel = new JPanel(new GridBagLayout());
             addSlangLabel = new JLabel("Slang");
             addDefinitionLabel = new JLabel("Definition");
-            addSlangTextField = new JTextField();
-            addDefinitionTextField = new JTextField();
+            addSlangTextField = new JTextField(20);
+            addDefinitionTextField = new JTextField(20);
 
-            editPanel = new JPanel(new GridLayout(3,1,20,10));
-            chooseSlangComboBox = new JComboBox();
-            editDefinitionLabel = new JLabel("Definition");
+            editPanel = new JPanel(new GridBagLayout());
+            chooseSlangTextField = new JTextField(10);
+            findBtn = new JButton("Find");
+            editDefinitionLabel = new JLabel("Edit definition of slang");
             editSlangLabel = new JLabel("Choose slang");
-            editDefinitionTextField = new JTextField();
+            editDefinitionTextArea = new JTextArea(7,3);
 
-            removePanel = new JPanel();
+            removePanel = new JPanel(new GridBagLayout());
             listSlang = new JList<String>();
             removeSlangBtn = new JButton("Confirm delete");
 
@@ -416,6 +460,8 @@ public class layout extends JFrame  implements ActionListener {
             resetBtn.setActionCommand("reset_btn");
             saveBtn.addActionListener(this);
             saveBtn.setActionCommand("save_btn");
+            findBtn.addActionListener(this);
+            findBtn.setActionCommand("find_btn");
         }
 
         /**
@@ -430,14 +476,17 @@ public class layout extends JFrame  implements ActionListener {
             if(str=="add_card"){
                 action = ADD;
                 saveBtn.setText("Save");
+                cl.show(bodyPanel,"add_card");
             }
             else if(str=="remove_card"){
                 action = REMOVE;
                 saveBtn.setText("Remove");
+                cl.show(bodyPanel,"remove_card");
             }
             else if(str=="edit_card"){
                 action = EDIT;
                 saveBtn.setText("Edit");
+                cl.show(bodyPanel,"edit_card");
             }
             else if(str=="reset_btn"){
                 data.reset(logChange);
@@ -450,31 +499,55 @@ public class layout extends JFrame  implements ActionListener {
                     String[] meanings = definition.split("\\| ");
                     Boolean isSuccess = data.addSlang(slang,meanings);
                     if(isSuccess){
+                        slangWord newSW = new slangWord(slang,meanings);
+                        logChange.add(action,newSW);
                         System.out.println("add_success");
+                        JOptionPane.showMessageDialog(this,"Add slang world successful!!","Success",JOptionPane.INFORMATION_MESSAGE);
                     }
                     else{
+                        JOptionPane.showMessageDialog(this,"Something wrong. Please try again.","Failed",JOptionPane.ERROR_MESSAGE);
                         System.out.println("add_failed");
                     }
-                    slangWord newSW = new slangWord(slang,meanings);
-                    logChange.add(action,newSW);
+
                 }
                 else if(action.equals(EDIT)){
-                    String slang = (String) chooseSlangComboBox.getSelectedItem();
-                    String definition = editDefinitionTextField.getText();
-                    String[] meanings = definition.split("\\| ");
+                    String slang = chooseSlangTextField.getText();
+                    String definition = editDefinitionTextArea.getText();
+                    String[] meanings = definition.split("\n");
                     Boolean isSuccess = data.editSlang(slang,meanings);
                     if(isSuccess){
+                        slangWord newSW = new slangWord(slang,meanings);
+                        logChange.add(action,newSW);
+                        JOptionPane.showMessageDialog(this,"Edit slang world successful!!","Success",JOptionPane.INFORMATION_MESSAGE);
                         System.out.println("edit_success");
                     }
-                    else{
+                    else {
+                        JOptionPane.showMessageDialog(this, "Something wrong. Please try again.", "Failed", JOptionPane.ERROR_MESSAGE);
                         System.out.println("edit_failed");
                     }
-                    slangWord newSW = new slangWord(slang,meanings);
-                    logChange.add(action,newSW);
                 }
                 else if(action.equals(REMOVE)){
 
                 }
+            }
+            else if(str == "find_btn"){
+                editDefinitionTextArea.setText("");
+                String slang = chooseSlangTextField.getText();
+                int index = data.searchBySlang(slang);
+                String[] meanings = data.getDefinitions(index);
+                if(meanings == null){
+                    editDefinitionTextArea.append("404 Not Found");
+
+                    editDefinitionTextArea.setEditable(false);
+                }
+                else{
+                    editDefinitionTextArea.setEditable(true);
+                    for(String meaning : meanings){
+                        editDefinitionTextArea.append(meaning);
+                        editDefinitionTextArea.append("\n");
+                    }
+                }
+
             }
         }
     }
