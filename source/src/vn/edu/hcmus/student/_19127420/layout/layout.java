@@ -264,11 +264,22 @@ public class layout extends JFrame  implements ActionListener {
             setLayout(new BorderLayout());
             menuLabel = new JLabel("Menu", CENTER);
             menuLabel.setAlignmentX(Label.CENTER);
-            bodyPanel = new JPanel(new GridLayout(4,1,5,10));
-            bodyPanel.add(randomButton);
-            bodyPanel.add(searchButton);
-            bodyPanel.add(settingButton);
-            bodyPanel.add(quizzButton);
+            bodyPanel = new JPanel(new GridBagLayout());
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.fill = GridBagConstraints.HORIZONTAL;
+            constraints.insets = new Insets(5,10,5,10);
+            constraints.anchor = GridBagConstraints.CENTER;
+            constraints.weighty = 1.0;
+            constraints.gridx = 0;
+            constraints.gridy = 0;
+            constraints.ipadx = 100;
+            bodyPanel.add(randomButton,constraints);
+            constraints.gridy = 1;
+            bodyPanel.add(searchButton,constraints);
+            constraints.gridy = 2;
+            bodyPanel.add(settingButton,constraints);
+            constraints.gridy = 3;
+            bodyPanel.add(quizzButton,constraints);
             add(menuLabel, BorderLayout.PAGE_START);
             add(bodyPanel, BorderLayout.CENTER);
         }
@@ -280,19 +291,20 @@ public class layout extends JFrame  implements ActionListener {
      * define setting panel
      */
     class settingPanel extends JPanel implements  ActionListener{
+        final DefaultListModel<String> model = new DefaultListModel<>();
         JPanel bodyPanel;
         JPanel controlPanel;
         JPanel footerPanel;
         JButton addBtn;
         JButton editBtn;
         JButton removeBtn;
-        JButton saveBtn;
+        JButton actionBtn;
         JButton resetBtn;
         JPanel addPanel;
         JLabel addSlangLabel;
         JLabel addDefinitionLabel;
         JTextField addSlangTextField;
-        JTextField addDefinitionTextField;
+        JTextArea addDefinitionTextField;
 
         JPanel editPanel;
         JTextField chooseSlangTextField;
@@ -303,7 +315,6 @@ public class layout extends JFrame  implements ActionListener {
 
         JPanel removePanel;
         JList listSlang;
-        JButton removeSlangBtn;
 
         // first card
         logChange.action action = ADD;
@@ -333,7 +344,7 @@ public class layout extends JFrame  implements ActionListener {
             // footer panel
             footerPanel.add(backSettingsButton);
             footerPanel.add(Box.createRigidArea(new Dimension(20,0)));
-            footerPanel.add(saveBtn);
+            footerPanel.add(actionBtn);
             JPanel endPanel = new JPanel(new FlowLayout());
             endPanel.add(footerPanel);
 
@@ -361,12 +372,14 @@ public class layout extends JFrame  implements ActionListener {
         }
 
         private void createRemoveCard() {
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.fill = GridBagConstraints.HORIZONTAL;
-            constraints.anchor= GridBagConstraints.CENTER;
-            constraints.gridx = 0;
-            constraints.gridy = 0;
-            constraints.weightx = 1.0;
+            for(String row:data.getListSlangWords()){
+                model.addElement(row);
+            }
+            listSlang = new JList(model);
+            listSlang.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            JScrollPane scrollPane = new JScrollPane(listSlang);
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            removePanel.add(scrollPane,BorderLayout.CENTER);
         }
 
         private void createEditCard() {
@@ -430,13 +443,13 @@ public class layout extends JFrame  implements ActionListener {
             editBtn = new JButton("Edit");
             removeBtn = new JButton("Remove");
             resetBtn = new JButton("Reset");
-            saveBtn = new JButton("Save");
+            actionBtn = new JButton("Add");
 
             addPanel = new JPanel(new GridBagLayout());
             addSlangLabel = new JLabel("Slang");
             addDefinitionLabel = new JLabel("Definition");
             addSlangTextField = new JTextField(20);
-            addDefinitionTextField = new JTextField(20);
+            addDefinitionTextField = new JTextArea(7,3);
 
             editPanel = new JPanel(new GridBagLayout());
             chooseSlangTextField = new JTextField(10);
@@ -444,10 +457,9 @@ public class layout extends JFrame  implements ActionListener {
             editDefinitionLabel = new JLabel("Edit definition of slang");
             editSlangLabel = new JLabel("Choose slang");
             editDefinitionTextArea = new JTextArea(7,3);
+            editDefinitionTextArea.setEditable(false);
+            removePanel = new JPanel(new BorderLayout());
 
-            removePanel = new JPanel(new GridBagLayout());
-            listSlang = new JList<String>();
-            removeSlangBtn = new JButton("Confirm delete");
 
             // add action listener
             addBtn.addActionListener(this);
@@ -458,8 +470,8 @@ public class layout extends JFrame  implements ActionListener {
             removeBtn.setActionCommand("remove_card");
             resetBtn.addActionListener(this);
             resetBtn.setActionCommand("reset_btn");
-            saveBtn.addActionListener(this);
-            saveBtn.setActionCommand("save_btn");
+            actionBtn.addActionListener(this);
+            actionBtn.setActionCommand("action_btn");
             findBtn.addActionListener(this);
             findBtn.setActionCommand("find_btn");
         }
@@ -475,28 +487,39 @@ public class layout extends JFrame  implements ActionListener {
             CardLayout cl = (CardLayout)(bodyPanel.getLayout());
             if(str=="add_card"){
                 action = ADD;
-                saveBtn.setText("Save");
+                actionBtn.setText("Add Slang");
                 cl.show(bodyPanel,"add_card");
             }
             else if(str=="remove_card"){
                 action = REMOVE;
-                saveBtn.setText("Remove");
+                actionBtn.setText("Delete Slang");
                 cl.show(bodyPanel,"remove_card");
             }
             else if(str=="edit_card"){
                 action = EDIT;
-                saveBtn.setText("Edit");
+                actionBtn.setText("Edit Slang");
                 cl.show(bodyPanel,"edit_card");
             }
             else if(str=="reset_btn"){
-                data.reset(logChange);
-                logChange.clear();
+                int output = JOptionPane.showConfirmDialog(bodyPanel,"Are you sure reset all changes","Confirm reset",JOptionPane.YES_NO_OPTION);
+                if (output == JOptionPane.YES_OPTION) {
+                    addSlangTextField.setText("");
+                    addDefinitionTextField.setText("");
+                    editDefinitionTextArea.setText("");
+                    chooseSlangTextField.setText("");
+                    model.removeAllElements();
+                    data.reset(logChange);
+                    logChange.clear();
+                    for(String row:data.getListSlangWords()){
+                        model.addElement(row);
+                    }
+                }
             }
-            else if(str=="save_btn"){
+            else if(str=="action_btn"){
                 if(action.equals(ADD)){
                     String slang = addSlangTextField.getText();
                     String definition = addDefinitionTextField.getText();
-                    String[] meanings = definition.split("\\| ");
+                    String[] meanings = definition.split("\n");
                     Boolean isSuccess = data.addSlang(slang,meanings);
                     if(isSuccess){
                         slangWord newSW = new slangWord(slang,meanings);
@@ -527,7 +550,25 @@ public class layout extends JFrame  implements ActionListener {
                     }
                 }
                 else if(action.equals(REMOVE)){
+                    int output = JOptionPane.showConfirmDialog(bodyPanel,"Are you sure delete this slang","Confirm delete",JOptionPane.YES_NO_OPTION);
+                    if (output == JOptionPane.YES_OPTION) {
+                        String slangChosen = (String)listSlang.getSelectedValue();
+                        String[] temp = slangChosen.split(":");
+                        if(temp.length >= 1)
+                        {
+                            String slang = temp[0];
+                            String[] meanings = temp[1].split("\\| ");
+                            data.removeSlang(slang);
+                            System.out.println(listSlang.getSelectedIndex());
+                            int index = listSlang.getSelectedIndex();
+                            slangWord removeSW = new slangWord(slang,meanings);
+                            logChange.add(action,removeSW);
+                            if(index != -1){
+                                model.remove(index);
+                            }
 
+                        }
+                    }
                 }
             }
             else if(str == "find_btn"){

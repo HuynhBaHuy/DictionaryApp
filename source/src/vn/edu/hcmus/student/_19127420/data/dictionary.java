@@ -24,6 +24,30 @@ public class dictionary {
         loadData("slang.txt");
         Collections.sort(slangArray);
     }
+    public String[] getListSlangWords() {
+        String[] result = new String[slangArray.size()];
+        int i = 0;
+        if (slangArray == null) {
+            return null;
+        } else {
+            for (slangWord s : slangArray) {
+                String row = s.getSlang() + ": ";
+                int length = s.getMeaning().length;
+                for (int j=0;j<length;j++) {
+                    String meaning = s.getMeaning()[j];
+                    if(j==0) {
+                        row += meaning;
+                    }else{
+                        row += "| "+ meaning ;
+                    }
+
+                }
+                result[i] = row;
+                i = i + 1;
+            }
+            return result;
+        }
+    }
 
     /**
      * add slang to dictionary
