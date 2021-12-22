@@ -27,7 +27,7 @@ public class layout extends JFrame  implements ActionListener {
     JPanel bodyPanel;
     JButton searchButton;
     JButton settingButton;
-    JButton quizzButton;
+    JButton quizButton;
     JButton randomButton;
     JButton backSearchButton;
     JButton backRandomButton;
@@ -121,7 +121,9 @@ public class layout extends JFrame  implements ActionListener {
 
             // add component to search card
             searchingPanel.add(inputPanel,BorderLayout.PAGE_START);
-            searchingPanel.add(resultSeachList,BorderLayout.CENTER);
+            JScrollPane scrollPane = new JScrollPane(resultSeachList);
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            searchingPanel.add(scrollPane,BorderLayout.CENTER);
 
             // add component to history card
             historyPanel.add(new JLabel("History search"), BorderLayout.PAGE_START);
@@ -163,17 +165,17 @@ public class layout extends JFrame  implements ActionListener {
             else if(str.equals("search-by-definition-btn")){
                 String key = inputTextField.getText();
                 int[] indexes = data.searchByDefinition(key);
+                List result = new List();
                 if(indexes == null){
-
+                    result.add("404 not found");
                 }
-                List results = new List(indexes.length);
-                for(int i = 0; i < indexes.length; i++){
-
-                    results.add(data.getSlang(indexes[i]));
+                else{
+                    for(int i = 0; i < indexes.length; i++){
+                        result.add(data.getSlang(indexes[i]));
+                    }
                 }
-
-                resultSeachList.setListData(results.getItems());
-                String[] row  = logSearch.add(key,results.getItems());
+                resultSeachList.setListData(result.getItems());
+                String[] row  = logSearch.add(key,result.getItems());
                 DefaultTableModel model = (DefaultTableModel) historySearchTable.getModel();
                 model.insertRow(0,row);
             }
@@ -279,13 +281,32 @@ public class layout extends JFrame  implements ActionListener {
             constraints.gridy = 2;
             bodyPanel.add(settingButton,constraints);
             constraints.gridy = 3;
-            bodyPanel.add(quizzButton,constraints);
+            bodyPanel.add(quizButton,constraints);
             add(menuLabel, BorderLayout.PAGE_START);
             add(bodyPanel, BorderLayout.CENTER);
         }
 
     }
 
+    /**
+     * define quiz panel
+     */
+    class quizPanel extends JPanel {
+        JLabel header;
+        JPanel bodyPanel;
+        JButton answerBtnA;
+        JButton answerBtnB;
+        JButton answerBtnC;
+        JButton answerBtnD;
+        JLabel questionLabel;
+        JPanel timePanel;
+        JLabel timeLabel;
+        JPanel scorePanel;
+        JLabel scoreLabel;
+        public quizPanel(){
+
+        }
+    }
 
     /**
      * define setting panel
@@ -613,10 +634,12 @@ public class layout extends JFrame  implements ActionListener {
         JPanel randomPanel = new randomPanel();
         JPanel searchPanel = new searchPanel();
         JPanel settingPanel = new settingPanel();
+        JPanel quizPanel = new quizPanel();
         bodyPanel.add(menuPanel,"menu");
         bodyPanel.add(randomPanel,"random");
         bodyPanel.add(searchPanel,"search");
         bodyPanel.add(settingPanel,"settings");
+        bodyPanel.add(quizPanel,"quiz");
         // show GUI
         createAndShowGUI(bodyPanel);
     }
@@ -630,7 +653,7 @@ public class layout extends JFrame  implements ActionListener {
         // init
         searchButton = new JButton("Search");
         settingButton = new JButton("Settings");
-        quizzButton = new JButton("Quizz");
+        quizButton = new JButton("Quiz");
         randomButton = new JButton("Random");
         backSearchButton = new JButton();
         backRandomButton = new JButton();
@@ -646,6 +669,8 @@ public class layout extends JFrame  implements ActionListener {
         searchButton.setActionCommand("search_menu_btn");
         settingButton.addActionListener(this);
         settingButton.setActionCommand("setting_menu_btn");
+        quizButton.addActionListener(this);
+        quizButton.setActionCommand("quiz_menu_btn");
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -660,8 +685,8 @@ public class layout extends JFrame  implements ActionListener {
         else if(str == "setting_menu_btn"){
             cl.show(bodyPanel,"settings");
         }
-        else if(str == "quizz_menu_btn"){
-
+        else if(str == "quiz_menu_btn"){
+            cl.show(bodyPanel,"quiz");
         }
         else if(str == "back")
         {

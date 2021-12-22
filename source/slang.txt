@@ -5007,7 +5007,7 @@ OUTTA`Out Of
 OVA`Original Video Animation
 OVNO`Or Very Near Offer
 OVO`Obviously
-OW`Ouch| Other Woman| Oh, Well
+OW`Ouch|z Other Woman| Oh, Well
 OWK`Other World Kingdom
 OWLING`Crouching and staring like an owl
 OWN`Beat| dominate

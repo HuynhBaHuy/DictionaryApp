@@ -39,21 +39,7 @@ public class slangWord implements Comparable<slangWord> {
     public void setMeaning(String[] meaning) {
         this.meaning = meaning;
     }
-    public void addMeaning(String meaning) {
-        if( this.meaning.length <=0) {
-            this.meaning = new String[1];
-            this.meaning[1] = meaning;
-        }
-        else{
-            int length = this.meaning.length;
-            String[] temp = new String[length + 1];
-            for(int i=0;i<length;i++){
-                temp[i] = this.meaning[i];
-            }
-            temp[length] = meaning;
-            this.meaning = temp;
-        }
-    }
+
 
     /**
      * only for testing or logging

@@ -15,12 +15,13 @@ import java.util.*;
 
 public class dictionary {
     private final List<slangWord> slangArray;
-
+    HashMap<String, List<String>> map;
     /**
      * Constructor
      */
     public dictionary(){
         slangArray = new ArrayList();
+        map = new HashMap();
         loadData("slang.txt");
         Collections.sort(slangArray);
     }
@@ -159,14 +160,23 @@ public class dictionary {
 
         return index;
     }
-
     /**
      * search by definition
      * @param key:STRING
      * @return array of index
      */
     public int[] searchByDefinition(String key){
-        return new int[3];
+        key = key.toLowerCase();
+        List<String> values = map.get(key);
+        if(values == null){
+            return null;
+        }
+        int[] result = new int[values.size()];
+        for(int i=0;i<values.size();i++){
+            String value = values.get(i);
+            result[i] = searchBySlang(value);
+        }
+        return result;
     }
 
     /**
@@ -193,7 +203,20 @@ public class dictionary {
                 String[] meaning = meanings.split("\\| ");
                 s.setMeaning(meaning);
                 this.slangArray.add(s);
+                meanings = meanings.replaceAll("\\W", " ");
+                String[] partsMeaning = meanings.split(" ");
+                for(String part:partsMeaning){
+                    String lowerCasePart = part.toLowerCase();
+                    if(map.containsKey(lowerCasePart)){
+                        map.get(lowerCasePart).add(symbol);
+                    }
+                    else{
+                        List<String> values = new ArrayList<String>();
+                        values.add(symbol);
+                        map.put(lowerCasePart,values);
+                    }
 
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
