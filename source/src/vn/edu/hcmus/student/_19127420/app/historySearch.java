@@ -14,12 +14,12 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.sleep;
 
-public class history {
+public class historySearch {
     List<logSearch> log;
-    public history(){
+    public historySearch(){
         log = new ArrayList<logSearch>();
     }
-    public history(String input, String[] result){
+    public historySearch(String input, String[] result){
         log = new ArrayList<logSearch>();
         logSearch timestamp = new logSearch(input,result);
         log.add(timestamp);
@@ -51,7 +51,7 @@ public class history {
     public static void main(String[] args){
         dictionary data = new dictionary();
         slangWord a = data.randomSlang();
-        history his = new history(a.getSlang(),a.getMeaning());
+        historySearch his = new historySearch(a.getSlang(),a.getMeaning());
         try {
             TimeUnit.MINUTES.sleep(2);
         } catch (InterruptedException e) {

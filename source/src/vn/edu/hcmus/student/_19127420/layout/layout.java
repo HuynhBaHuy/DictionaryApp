@@ -5,7 +5,9 @@ package vn.edu.hcmus.student._19127420.layout;/*..
  * Description:...
  */
 
-import vn.edu.hcmus.student._19127420.app.history;
+import vn.edu.hcmus.student._19127420.app.historyChange;
+import vn.edu.hcmus.student._19127420.app.historySearch;
+import vn.edu.hcmus.student._19127420.app.logChange;
 import vn.edu.hcmus.student._19127420.data.dictionary;
 import vn.edu.hcmus.student._19127420.data.slangWord;
 
@@ -14,6 +16,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static javax.swing.SwingConstants.CENTER;
+import static vn.edu.hcmus.student._19127420.app.logChange.action.*;
 
 /**
  * define main frame
@@ -26,8 +31,13 @@ public class layout extends JFrame  implements ActionListener {
     JButton randomButton;
     JButton backSearchButton;
     JButton backRandomButton;
+    JButton backSettingsButton;
     dictionary data;
-    history log;
+    historySearch logSearch;
+    historyChange logChange;
+    /**
+     * define search panel
+     */
     class searchPanel extends JPanel implements  ActionListener{
         final String notFound = "404 NOT FOUND";
 
@@ -41,7 +51,7 @@ public class layout extends JFrame  implements ActionListener {
         JButton historyBtn;
         JButton backBtn;
         JTextField inputTextField;
-        JList<String> resultSeachList;
+        JList resultSeachList;
         JTable historySearchTable;
 
 
@@ -77,7 +87,7 @@ public class layout extends JFrame  implements ActionListener {
             // init other component in search card
             JLabel inputLabel = new JLabel("Seach");
             inputTextField = new JTextField();
-            resultSeachList = new JList<String>();
+            resultSeachList = new JList();
             JPanel inputPanel = new JPanel();
             inputPanel.setLayout(new BoxLayout(inputPanel,BoxLayout.X_AXIS));
             inputPanel.add(inputLabel);
@@ -85,12 +95,12 @@ public class layout extends JFrame  implements ActionListener {
             inputPanel.add(inputTextField);
             // init component in history card
             String[] columnNames = {"Time start", "Key search","Results"};
-            int length = log.getLength();
+            int length = logSearch.getLength();
             String[][] logData = new String[length][3];
             for (int i = 0; i < length; i++){
-                logData[i][0] = log.getLog().get(i).getTime();
-                logData[i][1] = log.getLog().get(i).getInput();
-                String[] resultArray = log.getLog().get(i).getResult();
+                logData[i][0] = logSearch.getLog().get(i).getTime();
+                logData[i][1] = logSearch.getLog().get(i).getInput();
+                String[] resultArray = logSearch.getLog().get(i).getResult();
                 String result = "";
                 for(int j=0;j<resultArray.length;j++){
                     if(j ==0 || j== resultArray.length - 1){
@@ -146,7 +156,7 @@ public class layout extends JFrame  implements ActionListener {
                     results[0] = notFound;
                 }
                 resultSeachList.setListData(results);
-                String[] row  = log.add(key,results);
+                String[] row  = logSearch.add(key,results);
                 DefaultTableModel model = (DefaultTableModel) historySearchTable.getModel();
                 model.insertRow(0,row);
             }
@@ -163,7 +173,7 @@ public class layout extends JFrame  implements ActionListener {
                 }
 
                 resultSeachList.setListData(results.getItems());
-                String[] row  = log.add(key,results.getItems());
+                String[] row  = logSearch.add(key,results.getItems());
                 DefaultTableModel model = (DefaultTableModel) historySearchTable.getModel();
                 model.insertRow(0,row);
             }
@@ -208,7 +218,7 @@ public class layout extends JFrame  implements ActionListener {
 
             // prepare data
             slangWord randSw = data.randomSlang();
-            slangLabel = new JLabel(randSw.getSlang(),SwingConstants.CENTER);
+            slangLabel = new JLabel(randSw.getSlang(), CENTER);
             meanings = new JList<String>();
             meanings.setListData(randSw.getMeaning());
             meanings.setPreferredSize(new Dimension(10,20));
@@ -252,7 +262,7 @@ public class layout extends JFrame  implements ActionListener {
         JPanel bodyPanel;
         public menuPanel(){
             setLayout(new BorderLayout());
-            menuLabel = new JLabel("Menu",SwingConstants.CENTER);
+            menuLabel = new JLabel("Menu", CENTER);
             menuLabel.setAlignmentX(Label.CENTER);
             bodyPanel = new JPanel(new GridLayout(4,1,5,10));
             bodyPanel.add(randomButton);
@@ -265,6 +275,209 @@ public class layout extends JFrame  implements ActionListener {
 
     }
 
+
+    /**
+     * define setting panel
+     */
+    class settingPanel extends JPanel implements  ActionListener{
+        JPanel bodyPanel;
+        JPanel controlPanel;
+        JPanel footerPanel;
+        JButton addBtn;
+        JButton editBtn;
+        JButton removeBtn;
+        JButton saveBtn;
+        JButton resetBtn;
+        JPanel addPanel;
+        JLabel addSlangLabel;
+        JLabel addDefinitionLabel;
+        JTextField addSlangTextField;
+        JTextField addDefinitionTextField;
+
+        JPanel editPanel;
+        JComboBox chooseSlangComboBox;
+        JLabel editSlangLabel;
+        JLabel editDefinitionLabel;
+        JTextField editDefinitionTextField;
+
+        JPanel removePanel;
+        JList listSlang;
+        JButton removeSlangBtn;
+
+        // first card
+        logChange.action action = ADD;
+        public settingPanel(){
+            // set layout
+            setLayout(new BorderLayout());
+            // initialize component
+            initializeComponent();
+
+            // control panel
+            GridBagConstraints constraintsControl = new GridBagConstraints();
+            constraintsControl.fill = GridBagConstraints.HORIZONTAL;
+            constraintsControl.anchor= GridBagConstraints.CENTER;
+            constraintsControl.gridx = 0;
+            constraintsControl.gridy = 0;
+            constraintsControl.insets = new Insets(-1,10 ,-1 ,10 );
+            constraintsControl.weighty = 0.3;
+            controlPanel.add(addBtn,constraintsControl);
+            constraintsControl.gridy = 1;
+            controlPanel.add(editBtn,constraintsControl);
+            constraintsControl.gridy = 2;
+            controlPanel.add(removeBtn,constraintsControl);
+            constraintsControl.gridy = 3;
+            controlPanel.add(resetBtn,constraintsControl);
+            JPanel temp = new JPanel();
+            temp.setBorder(BorderFactory.createLineBorder(Color.red));
+            JPanel temp1 = new JPanel();
+            temp1.setBorder(BorderFactory.createLineBorder(Color.red));
+            // add card
+            addPanel.setBorder(BorderFactory.createLineBorder(Color.red));
+            GridBagConstraints constraintsAddCard = new GridBagConstraints();
+            constraintsAddCard.fill = GridBagConstraints.HORIZONTAL;
+            constraintsAddCard.anchor = GridBagConstraints.NORTH;
+            constraintsAddCard.insets = new Insets(0, 5, 5, 0);
+            constraintsAddCard.weightx = 0.5;
+            constraintsAddCard.gridx = 0;
+            constraintsAddCard.gridy = 1;
+            addPanel.add(addSlangLabel,constraintsAddCard);
+
+            constraintsAddCard.gridx = 1;
+            constraintsAddCard.gridy = 1;
+            constraintsAddCard.gridwidth = GridBagConstraints.REMAINDER;
+            addPanel.add(addSlangTextField,constraintsAddCard);
+
+            constraintsAddCard.gridx = 0;
+            constraintsAddCard.gridy = 2;
+            addPanel.add(addDefinitionLabel,constraintsAddCard);
+
+            constraintsAddCard.gridx = 1;
+            constraintsAddCard.gridy = 2;
+            constraintsAddCard.gridwidth = GridBagConstraints.REMAINDER;
+            addPanel.add(addDefinitionTextField,constraintsAddCard);
+            // edit card
+
+            // remove card
+
+            // body panel
+            bodyPanel.add(addPanel,"add_card");
+            bodyPanel.add(editPanel,"edit_card");
+            bodyPanel.add(removePanel,"remove_card");
+
+            // footer panel
+            footerPanel.add(backSettingsButton);
+            footerPanel.add(Box.createRigidArea(new Dimension(20,0)));
+            footerPanel.add(saveBtn);
+            JPanel endPanel = new JPanel(new FlowLayout());
+            endPanel.add(footerPanel);
+
+            // add to main panel
+            add(controlPanel,BorderLayout.LINE_START);
+            add(bodyPanel,BorderLayout.CENTER);
+            add(endPanel,BorderLayout.PAGE_END);
+        }
+        private void initializeComponent(){
+            //initialize Component
+            bodyPanel = new JPanel(new CardLayout());
+            controlPanel = new JPanel();
+            controlPanel.setLayout(new GridBagLayout());
+            footerPanel = new JPanel();
+            footerPanel.setLayout(new BoxLayout(footerPanel,BoxLayout.X_AXIS));
+            addBtn = new JButton("Add");
+            editBtn = new JButton("Edit");
+            removeBtn = new JButton("Remove");
+            resetBtn = new JButton("Reset");
+            saveBtn = new JButton("Save");
+
+            addPanel = new JPanel(new GridBagLayout());
+            addSlangLabel = new JLabel("Slang");
+            addDefinitionLabel = new JLabel("Definition");
+            addSlangTextField = new JTextField();
+            addDefinitionTextField = new JTextField();
+
+            editPanel = new JPanel(new GridLayout(3,1,20,10));
+            chooseSlangComboBox = new JComboBox();
+            editDefinitionLabel = new JLabel("Definition");
+            editSlangLabel = new JLabel("Choose slang");
+            editDefinitionTextField = new JTextField();
+
+            removePanel = new JPanel();
+            listSlang = new JList<String>();
+            removeSlangBtn = new JButton("Confirm delete");
+
+            // add action listener
+            addBtn.addActionListener(this);
+            addBtn.setActionCommand("add_card");
+            editBtn.addActionListener(this);
+            editBtn.setActionCommand("edit_card");
+            removeBtn.addActionListener(this);
+            removeBtn.setActionCommand("remove_card");
+            resetBtn.addActionListener(this);
+            resetBtn.setActionCommand("reset_btn");
+            saveBtn.addActionListener(this);
+            saveBtn.setActionCommand("save_btn");
+        }
+
+        /**
+         * Invoked when an action occurs.
+         *
+         * @param e the event to be processed
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String str = e.getActionCommand();
+            CardLayout cl = (CardLayout)(bodyPanel.getLayout());
+            if(str=="add_card"){
+                action = ADD;
+                saveBtn.setText("Save");
+            }
+            else if(str=="remove_card"){
+                action = REMOVE;
+                saveBtn.setText("Remove");
+            }
+            else if(str=="edit_card"){
+                action = EDIT;
+                saveBtn.setText("Edit");
+            }
+            else if(str=="reset_btn"){
+                data.reset(logChange);
+                logChange.clear();
+            }
+            else if(str=="save_btn"){
+                if(action.equals(ADD)){
+                    String slang = addSlangTextField.getText();
+                    String definition = addDefinitionTextField.getText();
+                    String[] meanings = definition.split("\\| ");
+                    Boolean isSuccess = data.addSlang(slang,meanings);
+                    if(isSuccess){
+                        System.out.println("add_success");
+                    }
+                    else{
+                        System.out.println("add_failed");
+                    }
+                    slangWord newSW = new slangWord(slang,meanings);
+                    logChange.add(action,newSW);
+                }
+                else if(action.equals(EDIT)){
+                    String slang = (String) chooseSlangComboBox.getSelectedItem();
+                    String definition = editDefinitionTextField.getText();
+                    String[] meanings = definition.split("\\| ");
+                    Boolean isSuccess = data.editSlang(slang,meanings);
+                    if(isSuccess){
+                        System.out.println("edit_success");
+                    }
+                    else{
+                        System.out.println("edit_failed");
+                    }
+                    slangWord newSW = new slangWord(slang,meanings);
+                    logChange.add(action,newSW);
+                }
+                else if(action.equals(REMOVE)){
+
+                }
+            }
+        }
+    }
     /**
      * constructor for layout
      */
@@ -272,8 +485,8 @@ public class layout extends JFrame  implements ActionListener {
         // initialize the dictionary
         data = new dictionary();
         // initialize search log
-        log = new history();
-
+        logSearch = new historySearch();
+        logChange = new historyChange();
 
         //initialize the component
         initializeComponent();
@@ -285,9 +498,11 @@ public class layout extends JFrame  implements ActionListener {
         JPanel menuPanel = new menuPanel();
         JPanel randomPanel = new randomPanel();
         JPanel searchPanel = new searchPanel();
+        JPanel settingPanel = new settingPanel();
         bodyPanel.add(menuPanel,"menu");
         bodyPanel.add(randomPanel,"random");
         bodyPanel.add(searchPanel,"search");
+        bodyPanel.add(settingPanel,"settings");
         // show GUI
         createAndShowGUI(bodyPanel);
     }
@@ -305,16 +520,18 @@ public class layout extends JFrame  implements ActionListener {
         randomButton = new JButton("Random");
         backSearchButton = new JButton();
         backRandomButton = new JButton();
-
+        backSettingsButton = new JButton();
         // create back button
         createBackToMainMenu(backSearchButton);
         createBackToMainMenu(backRandomButton);
-
+        createBackToMainMenu(backSettingsButton);
         // action lister
         randomButton.addActionListener(this);
         randomButton.setActionCommand("random_menu_btn");
         searchButton.addActionListener(this);
         searchButton.setActionCommand("search_menu_btn");
+        settingButton.addActionListener(this);
+        settingButton.setActionCommand("setting_menu_btn");
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -327,7 +544,7 @@ public class layout extends JFrame  implements ActionListener {
             cl.show(bodyPanel,"search");
         }
         else if(str == "setting_menu_btn"){
-
+            cl.show(bodyPanel,"settings");
         }
         else if(str == "quizz_menu_btn"){
 

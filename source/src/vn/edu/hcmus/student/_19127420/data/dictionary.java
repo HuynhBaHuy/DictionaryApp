@@ -5,6 +5,9 @@ package vn.edu.hcmus.student._19127420.data;/*..
  * Description: define dictionary class which contains a list of slang
  */
 
+import vn.edu.hcmus.student._19127420.app.historyChange;
+import vn.edu.hcmus.student._19127420.app.logChange;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -39,7 +42,25 @@ public class dictionary {
             return false;
         }
     }
-
+    public void reset(historyChange history){
+        List<logChange> logArray = history.getLog();
+        for(logChange singleLog : logArray){
+            if(singleLog.getAction()== logChange.action.ADD){
+                String slang = singleLog.getData().getSlang();
+                removeSlang(slang);
+            }
+            else if(singleLog.getAction() == logChange.action.EDIT){
+                String slang = singleLog.getData().getSlang();
+                String[] meanings = singleLog.getData().getMeaning();
+                editSlang(slang,meanings);
+            }
+            else{
+                String slang = singleLog.getData().getSlang();
+                String[] meanings = singleLog.getData().getMeaning();
+                addSlang(slang,meanings);
+            }
+        }
+    }
     /**
      * edit a slang of dictionary
      * @param symbol: STRING
@@ -56,11 +77,15 @@ public class dictionary {
     }
 
     /**
-     * remove slang by its index
-     * @param index: INT
+     * remove a slang by its slang
+     * @param slang:STRING
      */
-    public void removeSlang(int index){
+    public void removeSlang(String slang){
         if(slangArray.isEmpty()){
+            return;
+        }
+        int index = searchBySlang(slang);
+        if(index<0 || index > slangArray.size()){
             return;
         }
         slangArray.remove(index);
