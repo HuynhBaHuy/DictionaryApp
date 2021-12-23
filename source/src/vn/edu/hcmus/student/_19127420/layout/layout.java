@@ -742,8 +742,17 @@ public class layout extends JFrame  implements ActionListener {
                         JOptionPane.showMessageDialog(this,"Add slang world successful!!","Success",JOptionPane.INFORMATION_MESSAGE);
                     }
                     else{
-                        JOptionPane.showMessageDialog(this,"Something wrong. Please try again.","Failed",JOptionPane.ERROR_MESSAGE);
-                        System.out.println("add_failed");
+                        int output = JOptionPane.showConfirmDialog(this,"This slang already have existed. Do you want overwrite it? ","Failed",JOptionPane.YES_NO_OPTION,JOptionPane.ERROR_MESSAGE);
+                        if(output == JOptionPane.YES_OPTION){
+                            data.editSlang(slang,meanings);
+                            slangWord newSW = new slangWord(slang,meanings);
+                            vn.edu.hcmus.student._19127420.app.logChange.action edit = EDIT;
+                            logChange.add(edit,newSW);
+                        }
+                        else{
+                            addSlangTextField.setText("");
+                            addDefinitionTextField.setText("");
+                        }
                     }
 
                 }
