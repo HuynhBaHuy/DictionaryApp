@@ -25,6 +25,7 @@ public class dictionary {
         loadData("slang.txt");
         Collections.sort(slangArray);
     }
+
     public String[] getListSlangWords() {
         String[] result = new String[slangArray.size()];
         int i = 0;
@@ -137,7 +138,12 @@ public class dictionary {
         }
         return slangArray.get(index).getSlang();
     }
-
+    public String getSlangWordStringAt(int index){
+        if(index<0 || index>=slangArray.size()){
+            return null;
+        }
+        return slangArray.get(index).display();
+    }
     /**
      *  get definition of slang word at index
      * @param index: INT

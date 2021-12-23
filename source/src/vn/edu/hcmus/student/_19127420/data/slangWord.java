@@ -42,13 +42,12 @@ public class slangWord implements Comparable<slangWord> {
 
 
     /**
-     * only for testing or logging
-     * print to console
+     *
      */
-    public void display(){
+    public String display(){
         String m ="";
         for (int i=0;i<meaning.length;i++){
-            if(i==0 || i== meaning.length-1){
+            if(i==0){
                 m+=meaning[i];
             }
             else{
@@ -56,6 +55,6 @@ public class slangWord implements Comparable<slangWord> {
             }
 
         }
-        System.out.println(slang + ": " + m);
+       return(slang + ": " + m);
     }
 }

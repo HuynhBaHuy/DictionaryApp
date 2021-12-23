@@ -171,7 +171,7 @@ public class layout extends JFrame  implements ActionListener {
                 }
                 else{
                     for(int i = 0; i < indexes.length; i++){
-                        result.add(data.getSlang(indexes[i]));
+                        result.add(data.getSlangWordStringAt(indexes[i]));
                     }
                 }
                 resultSeachList.setListData(result.getItems());
