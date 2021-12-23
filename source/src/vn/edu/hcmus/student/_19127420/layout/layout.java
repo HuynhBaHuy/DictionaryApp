@@ -8,6 +8,8 @@ package vn.edu.hcmus.student._19127420.layout;/*..
 import vn.edu.hcmus.student._19127420.app.historyChange;
 import vn.edu.hcmus.student._19127420.app.historySearch;
 import vn.edu.hcmus.student._19127420.app.logChange;
+import vn.edu.hcmus.student._19127420.app.quiz;
+import vn.edu.hcmus.student._19127420.app.question;
 import vn.edu.hcmus.student._19127420.data.dictionary;
 import vn.edu.hcmus.student._19127420.data.slangWord;
 
@@ -32,9 +34,11 @@ public class layout extends JFrame  implements ActionListener {
     JButton backSearchButton;
     JButton backRandomButton;
     JButton backSettingsButton;
+    JButton backQuizButton;
     dictionary data;
     historySearch logSearch;
     historyChange logChange;
+    quiz test;
     /**
      * define search panel
      */
@@ -291,19 +295,208 @@ public class layout extends JFrame  implements ActionListener {
     /**
      * define quiz panel
      */
-    class quizPanel extends JPanel {
+    class quizPanel extends JPanel implements ActionListener {
         JLabel header;
+        JPanel headerPanel;
         JPanel bodyPanel;
+        JPanel questionPanel;
+        JPanel answersPanel;
+        JPanel footerPanel;
         JButton answerBtnA;
         JButton answerBtnB;
         JButton answerBtnC;
         JButton answerBtnD;
         JLabel questionLabel;
-        JPanel timePanel;
-        JLabel timeLabel;
+        JButton resetBtn;
         JPanel scorePanel;
         JLabel scoreLabel;
+        JLabel countQuestionLabel;
         public quizPanel(){
+            setLayout(new BorderLayout());
+            test = new quiz(data);
+
+            initializeComponent();
+            // header and footer
+            headerPanel.add(header);
+            footerPanel.add(backQuizButton);
+            footerPanel.add(resetBtn);
+            //body panel
+            bodyPanel.setBackground(Color.WHITE);
+            bodyPanel.setBorder(BorderFactory.createLineBorder(new Color(153,153,255)));
+
+
+            // score
+            scorePanel.add(scoreLabel);
+            scorePanel.setBackground(new Color(255,229,204));
+            scorePanel.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+            scoreLabel.setVerticalAlignment(1);
+            // question
+            questionPanel.add(questionLabel);
+            questionPanel.setBackground(Color.WHITE);
+            questionLabel.setFont(new Font("Ink Free", Font.PLAIN,25));
+
+            // answer
+            Color buttonColor = new Color(0,128,255);
+            Font fontBtn = new Font("Ink Free", Font.BOLD,15);
+            answersPanel.setBackground(Color.WHITE);
+
+            answerBtnA.setFont(fontBtn);
+            answerBtnA.setBackground(buttonColor);
+
+
+            answerBtnB.setFont(fontBtn);
+            answerBtnB.setBackground(buttonColor);
+
+
+            answerBtnC.setFont(fontBtn);
+            answerBtnC.setBackground(buttonColor);
+
+
+            answerBtnD.setFont(fontBtn);
+            answerBtnD.setBackground(buttonColor);
+
+            GridBagConstraints c = new GridBagConstraints();
+            c.fill = GridBagConstraints.BOTH;
+            c.weightx = 0.5;
+            c.weighty = 0.5;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.insets = new Insets(10,10,5,10);
+            answersPanel.add(answerBtnA,c);
+            c.gridx = 0;
+            c.gridy = 1;
+            answersPanel.add(answerBtnB,c);
+            c.gridx = 1;
+            c.gridy = 0;
+            answersPanel.add(answerBtnC,c);
+            c.gridx = 1;
+            c.gridy = 1;
+            answersPanel.add(answerBtnD,c);
+
+            //add grid bag constraint for body pane
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.weightx = 1.0;
+            constraints.anchor = GridBagConstraints.FIRST_LINE_START;
+            constraints.gridx = 0;
+            constraints.gridy = 0;
+            constraints.ipadx = 20;
+            constraints.ipady = 10;
+            bodyPanel.add(scorePanel,constraints);
+            constraints.fill = GridBagConstraints.HORIZONTAL;
+            constraints.gridx = 0;
+            constraints.gridy = 1;
+            constraints.gridwidth = GridBagConstraints.REMAINDER;
+            bodyPanel.add(questionPanel,constraints);
+            constraints.gridx = 0;
+            constraints.gridy = 4;
+            constraints.gridwidth = GridBagConstraints.REMAINDER;
+            constraints.gridheight = GridBagConstraints.REMAINDER;
+            bodyPanel.add(answersPanel,constraints);
+
+            // set data
+            loadQuestion(test.getFirstQuestion());
+            add(headerPanel, BorderLayout.PAGE_START);
+            add(bodyPanel, BorderLayout.CENTER);
+            add(footerPanel,BorderLayout.PAGE_END);
+        }
+        void initializeComponent(){
+            header = new JLabel("Quiz");
+            headerPanel = new JPanel(new FlowLayout());
+            bodyPanel = new JPanel(new GridBagLayout());
+            footerPanel = new JPanel(new FlowLayout());
+            questionPanel = new JPanel(new FlowLayout());
+            answersPanel = new JPanel(new GridBagLayout());
+            answerBtnA = new JButton();
+            answerBtnB = new JButton();
+            answerBtnC = new JButton();
+            answerBtnD = new JButton();
+            questionLabel = new JLabel();
+            scorePanel = new JPanel(new FlowLayout());
+            scoreLabel = new JLabel();
+            countQuestionLabel = new JLabel();
+            resetBtn = new JButton("Reset");
+            // action listener
+            answerBtnA.addActionListener(this);
+            answerBtnB.addActionListener(this);
+            answerBtnC.addActionListener(this);
+            answerBtnD.addActionListener(this);
+            resetBtn.addActionListener(this);
+            resetBtn.setActionCommand("reset_btn");
+            answerBtnA.setActionCommand("answerA_btn");
+            answerBtnB.setActionCommand("answerB_btn");
+            answerBtnC.setActionCommand("answerC_btn");
+            answerBtnD.setActionCommand("answerD_btn");
+
+        }
+        void loadQuestion(question q) {
+            String question = q.getQuestion();
+            String[] answers = q.getFullAnswers();
+            int score = test.getScore();
+            int maxScore = test.getMaxScore();
+            int index = test.getIndexQuestion();
+            int maxQuestion = test.getMaxQuestion();
+            questionLabel.setText(question +" là gì? ");
+            answerBtnA.setText(answers[0]);
+            answerBtnB.setText(answers[1]);
+            answerBtnC.setText(answers[2]);
+            answerBtnD.setText(answers[3]);
+            scoreLabel.setText(score+"/"+maxScore);
+            countQuestionLabel.setText(index+"/"+maxQuestion);
+        }
+
+        /**
+         * Invoked when an action occurs.
+         *
+         * @param e the event to be processed
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String str = e.getActionCommand();
+            if(str.equals("reset_btn")){
+                int option = JOptionPane.showConfirmDialog(bodyPanel,"Do you want to reset the game? ","Confirm reset",JOptionPane.YES_NO_OPTION);
+                if(option == JOptionPane.YES_OPTION){
+                    test.newGame(data);
+                    loadQuestion(test.getFirstQuestion());
+                }
+            }
+            else{
+                String answers = "";
+                if(str.equals("answerA_btn")){
+                    answers = answerBtnA.getText();
+                }
+                else if(str.equals("answerB_btn")){
+                    answers = answerBtnB.getText();
+                }
+                else if(str.equals("answerC_btn")){
+                    answers = answerBtnC.getText();
+                }
+                else if(str.equals("answerD_btn")){
+                    answers = answerBtnD.getText();
+                }
+                int isCorrect = test.answers(answers);
+                if(isCorrect == 1){
+                    loadQuestion(test.nextQuestion());
+                }
+                else if(isCorrect == 0){
+                    int option = JOptionPane.showConfirmDialog(bodyPanel,"You win. Play again? ","Congratulations!!!",JOptionPane.YES_NO_OPTION);
+                    if(option == JOptionPane.YES_OPTION){
+                        test.newGame(data);
+                        loadQuestion(test.getFirstQuestion());
+                    }
+                    else{
+                    }
+                }
+                else {
+                    int option = JOptionPane.showConfirmDialog(bodyPanel,"Your score: "+test.getScore()+"/"+test.getMaxScore()+". Another game?","Quizz result",JOptionPane.YES_NO_OPTION,JOptionPane.PLAIN_MESSAGE);
+                    if(option == JOptionPane.YES_OPTION){
+                        test.newGame(data);
+                        loadQuestion(test.getFirstQuestion());
+                    }
+                    else {
+
+                    }
+                }
+            }
 
         }
     }
@@ -619,6 +812,7 @@ public class layout extends JFrame  implements ActionListener {
     public layout(){
         // initialize the dictionary
         data = new dictionary();
+
         // initialize search log
         logSearch = new historySearch();
         logChange = new historyChange();
@@ -658,10 +852,12 @@ public class layout extends JFrame  implements ActionListener {
         backSearchButton = new JButton();
         backRandomButton = new JButton();
         backSettingsButton = new JButton();
+        backQuizButton = new JButton();
         // create back button
         createBackToMainMenu(backSearchButton);
         createBackToMainMenu(backRandomButton);
         createBackToMainMenu(backSettingsButton);
+        createBackToMainMenu(backQuizButton);
         // action lister
         randomButton.addActionListener(this);
         randomButton.setActionCommand("random_menu_btn");
