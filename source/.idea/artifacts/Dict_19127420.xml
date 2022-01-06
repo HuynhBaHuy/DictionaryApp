@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Dict_19127420">
+    <output-path>$PROJECT_DIR$/../../../MainCourse/Java programming/Jar pakage/Dict_19127420</output-path>
+    <root id="archive" name="Dict_19127420.jar">
+      <element id="module-output" name="source" />
+    </root>
+  </artifact>
+</component>

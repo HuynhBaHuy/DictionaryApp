@@ -728,9 +728,11 @@ public class layout extends JFrame  implements ActionListener {
                     model.removeAllElements();
                     data.reset(logChange);
                     logChange.clear();
+                    String[] a = data.getListSlangWords();
                     for(String row:data.getListSlangWords()){
                         model.addElement(row);
                     }
+                    System.out.println("reset done");
                 }
             }
             else if(str=="action_btn"){
@@ -762,11 +764,12 @@ public class layout extends JFrame  implements ActionListener {
                 }
                 else if(action.equals(EDIT)){
                     String slang = chooseSlangTextField.getText();
+                    String[] oldMeans = data.getDefinitions(data.searchBySlang(slang));
                     String definition = editDefinitionTextArea.getText();
                     String[] meanings = definition.split("\n");
                     Boolean isSuccess = data.editSlang(slang,meanings);
                     if(isSuccess){
-                        slangWord newSW = new slangWord(slang,meanings);
+                        slangWord newSW = new slangWord(slang,oldMeans);
                         logChange.add(action,newSW);
                         JOptionPane.showMessageDialog(this,"Edit slang world successful!!","Success",JOptionPane.INFORMATION_MESSAGE);
                         System.out.println("edit_success");
