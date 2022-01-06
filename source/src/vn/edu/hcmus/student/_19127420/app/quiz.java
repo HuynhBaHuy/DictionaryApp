@@ -55,10 +55,10 @@ public class quiz {
      */
     public int answers(String ans){
         if(test.get(currentQuestion).getCorrectAnswer().equals(ans)){
-            if(score + scoreEachQuestion < getMaxScore()){
+            score += scoreEachQuestion;
+            if(score < getMaxScore()){
                 return 1;
             }
-            score += scoreEachQuestion;
             return 0;
         }
         else{

@@ -428,20 +428,23 @@ public class layout extends JFrame  implements ActionListener {
             answerBtnD.setActionCommand("answerD_btn");
 
         }
-        void loadQuestion(question q) {
-            String question = q.getQuestion();
-            String[] answers = q.getFullAnswers();
+        void loadScore(){
             int score = test.getScore();
             int maxScore = test.getMaxScore();
             int index = test.getIndexQuestion();
             int maxQuestion = test.getMaxQuestion();
+            scoreLabel.setText(score+"/"+maxScore);
+            countQuestionLabel.setText(index+"/"+maxQuestion);
+        }
+        void loadQuestion(question q) {
+            String question = q.getQuestion();
+            String[] answers = q.getFullAnswers();
             questionLabel.setText(question +" là gì? ");
             answerBtnA.setText(answers[0]);
             answerBtnB.setText(answers[1]);
             answerBtnC.setText(answers[2]);
             answerBtnD.setText(answers[3]);
-            scoreLabel.setText(score+"/"+maxScore);
-            countQuestionLabel.setText(index+"/"+maxQuestion);
+            loadScore();
         }
 
         /**
@@ -478,6 +481,7 @@ public class layout extends JFrame  implements ActionListener {
                     loadQuestion(test.nextQuestion());
                 }
                 else if(isCorrect == 0){
+                    loadScore();
                     int option = JOptionPane.showConfirmDialog(bodyPanel,"You win. Play again? ","Congratulations!!!",JOptionPane.YES_NO_OPTION);
                     if(option == JOptionPane.YES_OPTION){
                         test.newGame(data);
